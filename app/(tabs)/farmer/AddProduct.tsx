@@ -23,6 +23,7 @@ export default function AddProduct() {
   const [description, setDescription] = useState('');
   const [quantity, setQuantity] = useState('');
   const [category, setCategory] = useState('');
+  const [popularity, setPopularity] = useState(''); // New field
   const [image, setImage] = useState(null);
   const [isImageSaved, setIsImageSaved] = useState(false);
 
@@ -34,14 +35,14 @@ export default function AddProduct() {
     });
 
     if (!result.canceled) {
-      setImage(result.uri); // Set the selected image URI
-      setIsImageSaved(false); // Reset saved status
+      setImage(result.assets[0].uri); // Set the selected image URI
+      setIsImageSaved(false); // Reset saved state
     }
   };
 
   const handleImageSave = () => {
     if (image) {
-      setIsImageSaved(true); // Mark the image as saved
+      setIsImageSaved(true); // Mark image as confirmed
       Alert.alert('Image Saved', 'Image has been saved successfully!');
     } else {
       Alert.alert('No Image', 'Please select an image first.');
@@ -49,7 +50,15 @@ export default function AddProduct() {
   };
 
   const handleAddProduct = async () => {
-    if (!productName || !price || !description || !quantity || !category || !isImageSaved) {
+    if (
+      !productName ||
+      !price ||
+      !description ||
+      !quantity ||
+      !category ||
+      !popularity ||
+      !isImageSaved
+    ) {
       Alert.alert('Error', 'Please fill in all fields and save the image.');
       return;
     }
@@ -67,6 +76,7 @@ export default function AddProduct() {
       formData.append('description', description);
       formData.append('quantity_available', quantity);
       formData.append('category', category);
+      formData.append('popularity', popularity); // Include popularity in the payload
 
       const imageName = image.split('/').pop();
       const imageType = `image/${imageName.split('.').pop()}`;
@@ -135,6 +145,13 @@ export default function AddProduct() {
         placeholder="Category (e.g., Fruits, Vegetables)"
         value={category}
         onChangeText={setCategory}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Popularity (e.g., 1-100)"
+        keyboardType="numeric"
+        value={popularity}
+        onChangeText={setPopularity} // New field
       />
 
       <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
