@@ -1,7 +1,10 @@
 import React from 'react';
 import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router'; // Import useRouter
 
 export default function FarmerDashboard() {
+  const router = useRouter(); // Initialize router
+
   const sampleProducts = [
     { id: '1', name: 'Tomatoes', stock: '25 kg' },
     { id: '2', name: 'Potatoes', stock: '50 kg' },
@@ -34,7 +37,10 @@ export default function FarmerDashboard() {
       <Text style={styles.header}>Farmer Dashboard</Text>
 
       {/* Add Product Section */}
-      <Button title="Add New Product" onPress={() => console.log('Navigate to Add Product')} />
+      <Button
+        title="Add New Product"
+        onPress={() => router.push('/farmer/AddProduct')} // Use router to navigate
+      />
 
       {/* Product List */}
       <Text style={styles.sectionHeader}>Your Products</Text>

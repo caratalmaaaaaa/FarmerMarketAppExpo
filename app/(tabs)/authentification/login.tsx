@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 export default function Login() {
@@ -22,23 +23,26 @@ export default function Login() {
       );
 
       if (response.status === 200 && response.data.token) {
-        const token = response.data.token; // Save this token for future requests
+        const token = response.data.token;
+
+        // Save the token locally
+        await AsyncStorage.setItem('authToken', token);
+
         Alert.alert('Login Successful', `Welcome back, ${userType}!`);
 
         // Navigate based on user type
         if (userType === 'farmer') {
-          router.push('/farmer'); // Navigate to farmer dashboard
+          router.push('/farmer');
         } else if (userType === 'buyer') {
-          router.push('/buyer'); // Navigate to buyer dashboard
+          router.push('/buyer');
         }
       } else {
         Alert.alert('Error', 'Invalid email or password.');
       }
     } catch (error) {
-        console.error('API Error:', error.response?.data || error.message);
-        Alert.alert('Error', 'Login failed. Please check your credentials.');
-      }
-
+      console.error('API Error:', error.response?.data || error.message);
+      Alert.alert('Error', 'Login failed. Please check your credentials.');
+    }
   };
 
   return (
